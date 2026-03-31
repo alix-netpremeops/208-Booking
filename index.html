@@ -3,15 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Boardroom A — Room Booking</title>
+  <title>Room 208 — Booking</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
       --bg: #ffffff;
       --bg-secondary: #f5f5f4;
-      --bg-success: #e1f5ee;
-      --bg-danger: #fcebeb;
       --text: #1a1a18;
       --text-secondary: #5f5e5a;
       --text-tertiary: #888780;
@@ -52,21 +50,81 @@
 
     .container { max-width: 760px; margin: 0 auto; }
 
+    /* Name setup screen */
+    .name-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    }
+    .name-card {
+      background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 2rem; width: 100%; max-width: 340px;
+    }
+    .name-card h2 { font-size: 18px; font-weight: 500; margin-bottom: 6px; }
+    .name-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.5; }
+    .name-card input {
+      width: 100%; padding: 9px 12px; border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-secondary); background: var(--bg);
+      color: var(--text); font-size: 15px; font-family: inherit; margin-bottom: 12px;
+    }
+    .name-card input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 2px rgba(29,158,117,0.2); }
+    .name-card button {
+      width: 100%; padding: 10px; border-radius: var(--radius-md);
+      border: none; background: var(--green); color: white;
+      font-size: 14px; font-weight: 500; font-family: inherit; cursor: pointer;
+    }
+    .name-card button:hover { background: var(--green-dark); }
+
+    /* Setup screen */
+    .setup-screen {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    }
+    .setup-card {
+      background: var(--bg); border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 2rem; width: 100%; max-width: 480px;
+    }
+    .setup-card h2 { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+    .setup-card p { font-size: 14px; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
+    .setup-card code {
+      display: block; background: var(--bg-secondary); border: 0.5px solid var(--border);
+      border-radius: var(--radius-md); padding: 10px 14px; font-size: 12px;
+      font-family: monospace; margin-bottom: 1rem; color: var(--text); word-break: break-all;
+    }
+    .setup-card input {
+      width: 100%; padding: 9px 12px; border-radius: var(--radius-md);
+      border: 0.5px solid var(--border-secondary); background: var(--bg);
+      color: var(--text); font-size: 13px; font-family: monospace; margin-bottom: 12px;
+    }
+    .setup-card input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 2px rgba(29,158,117,0.2); }
+    .setup-card button {
+      width: 100%; padding: 10px; border-radius: var(--radius-md);
+      border: none; background: var(--green); color: white;
+      font-size: 14px; font-weight: 500; font-family: inherit; cursor: pointer;
+    }
+    .setup-card button:hover { background: var(--green-dark); }
+    .setup-step { font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; }
+    .setup-step strong { color: var(--text); font-weight: 500; }
+
+    /* Main app */
     .header {
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px;
     }
-
     .room-badge { display: flex; align-items: center; gap: 10px; }
     .room-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
     .room-name { font-size: 18px; font-weight: 500; }
-    .room-cap { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+
+    .header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .user-pill {
+      font-size: 12px; color: var(--text-secondary); background: var(--bg);
+      border: 0.5px solid var(--border); border-radius: 99px; padding: 4px 12px;
+      cursor: pointer;
+    }
+    .user-pill:hover { border-color: var(--border-secondary); }
 
     .nav { display: flex; align-items: center; gap: 10px; }
     .nav button {
       border: 0.5px solid var(--border-secondary); background: var(--bg);
       border-radius: var(--radius-md); padding: 6px 14px; cursor: pointer;
-      color: var(--text); font-size: 14px;
+      color: var(--text); font-size: 14px; font-family: inherit;
     }
     .nav button:hover { background: var(--bg-secondary); }
     .week-label { font-size: 14px; font-weight: 500; min-width: 150px; text-align: center; }
@@ -75,15 +133,10 @@
       border: 0.5px solid var(--border); border-radius: var(--radius-lg);
       overflow: hidden; background: var(--bg);
     }
-
-    .cal-head {
-      display: grid; grid-template-columns: 56px repeat(5, 1fr);
-      border-bottom: 0.5px solid var(--border);
-    }
+    .cal-head { display: grid; grid-template-columns: 56px repeat(5, 1fr); border-bottom: 0.5px solid var(--border); }
     .cal-head-cell {
       padding: 10px 8px; text-align: center; font-size: 12px;
-      color: var(--text-secondary); font-weight: 500;
-      border-right: 0.5px solid var(--border);
+      color: var(--text-secondary); font-weight: 500; border-right: 0.5px solid var(--border);
     }
     .cal-head-cell:last-child { border-right: none; }
     .cal-head-cell.today { color: var(--green); }
@@ -91,7 +144,6 @@
     .cal-head-cell.today .dn { color: var(--green); }
 
     .cal-body { display: grid; grid-template-columns: 56px repeat(5, 1fr); }
-
     .time-col { display: flex; flex-direction: column; }
     .time-cell {
       height: 44px; display: flex; align-items: flex-start; justify-content: flex-end;
@@ -126,11 +178,12 @@
     }
     .legend-dot { width: 10px; height: 10px; border-radius: 3px; background: var(--green-bg); border: 1px solid var(--green); }
 
+    .loading { text-align: center; padding: 3rem; color: var(--text-secondary); font-size: 14px; }
+
     /* Modal */
     .modal-bg {
       position: fixed; inset: 0; background: rgba(0,0,0,0.4);
-      z-index: 100; display: flex; align-items: center; justify-content: center;
-      padding: 1rem;
+      z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem;
     }
     .modal {
       background: var(--bg); border-radius: var(--radius-lg);
@@ -138,7 +191,6 @@
       width: 100%; max-width: 320px;
     }
     .modal h3 { font-size: 16px; font-weight: 500; margin-bottom: 1.25rem; }
-
     .field { margin-bottom: 12px; }
     .field label { font-size: 12px; color: var(--text-secondary); display: block; margin-bottom: 4px; }
     .field input, .field select {
@@ -149,9 +201,7 @@
     .field input:focus, .field select:focus {
       outline: none; border-color: var(--green); box-shadow: 0 0 0 2px rgba(29,158,117,0.2);
     }
-
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
     .modal-actions { display: flex; gap: 8px; margin-top: 1.25rem; }
     .modal-actions button {
       flex: 1; padding: 9px; border-radius: var(--radius-md);
@@ -163,16 +213,34 @@
     .btn-confirm:hover { background: var(--green-dark) !important; }
     .btn-delete { border-color: var(--red) !important; color: var(--red-text) !important; }
     .btn-delete:hover { background: var(--red-bg) !important; }
-
-    .error { font-size: 12px; color: var(--red); margin-top: 6px; }
+    .error { font-size: 12px; color: var(--red); margin-top: 6px; min-height: 16px; }
+    .own-badge {
+      font-size: 11px; background: var(--green-bg); color: var(--green-dark);
+      border-radius: 4px; padding: 2px 7px; display: inline-block; margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <div id="app"></div>
-</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<div id="root"></div>
 
 <script>
+// ─── STEP 1: Paste your Firebase config here ─────────────────────────────────
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDpKr7x9dSQV4BQ33z8y6tFQTWxIz65aBo",
+  authDomain: "booking-86a47.firebaseapp.com",
+  databaseURL: "https://booking-86a47-default-rtdb.firebaseio.com",
+  projectId: "booking-86a47",
+  storageBucket: "booking-86a47.firebasestorage.app",
+  messagingSenderId: "521433950401",
+  appId: "1:521433950401:web:707b500336c153aa7d0c40"
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
 const COLORS = [
   { bg: '#E1F5EE', border: '#1D9E75', text: '#085041' },
   { bg: '#E6F1FB', border: '#378ADD', text: '#0C447C' },
@@ -189,14 +257,24 @@ const TIMES = [
 const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-let bookings = JSON.parse(localStorage.getItem('boardroom_bookings') || '[]');
-let nextId = parseInt(localStorage.getItem('boardroom_nextid') || '1');
+let db = null;
+let bookings = {};
 let weekOffset = 0;
 let modal = null;
+let userName = localStorage.getItem('room208_name') || '';
+let colorCounter = 0;
 
-function save() {
-  localStorage.setItem('boardroom_bookings', JSON.stringify(bookings));
-  localStorage.setItem('boardroom_nextid', String(nextId));
+function isConfigured() {
+  return FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.databaseURL.length > 0;
+}
+
+function initFirebase() {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+  db.ref('bookings').on('value', snap => {
+    bookings = snap.val() || {};
+    renderApp();
+  });
 }
 
 function getWeekDates(offset) {
@@ -217,33 +295,38 @@ function isToday(d) {
 }
 
 function weekKey(dates) { return dates[0].toISOString().slice(0, 10); }
+function timeLabel(s, e) { return `${TIMES[s]} – ${TIMES[e]}`; }
 
-function getBookingsForWeekDay(wk, day) {
-  return bookings.filter(b => b.week === wk && b.day === day);
+function getWeekBookings(wk) {
+  return Object.entries(bookings)
+    .filter(([, b]) => b.week === wk)
+    .map(([id, b]) => ({ ...b, id }));
 }
 
 function isSlotBooked(wk, day, slot) {
-  return bookings.some(b => b.week === wk && b.day === day && slot >= b.startSlot && slot < b.endSlot);
+  return Object.values(bookings).some(b =>
+    b.week === wk && b.day === day && slot >= b.startSlot && slot < b.endSlot
+  );
 }
 
 function openNew(day, slot) {
   modal = { type: 'new', day, startSlot: slot, endSlot: Math.min(slot + 2, TIMES.length) };
-  render();
+  renderApp();
 }
 
 function openView(id) {
   modal = { type: 'view', id };
-  render();
+  renderApp();
 }
 
-function closeModal() { modal = null; render(); }
+function closeModal() { modal = null; renderApp(); }
 
 function confirmBooking() {
   const title = document.getElementById('m-title').value.trim();
-  const organizer = document.getElementById('m-org').value.trim();
   const startSlot = parseInt(document.getElementById('m-start').value);
   const endSlot = parseInt(document.getElementById('m-end').value);
   const errEl = document.getElementById('m-err');
+  errEl.textContent = '';
 
   if (!title) { errEl.textContent = 'Please enter a title.'; return; }
   if (endSlot <= startSlot) { errEl.textContent = 'End time must be after start time.'; return; }
@@ -251,57 +334,102 @@ function confirmBooking() {
   const dates = getWeekDates(weekOffset);
   const wk = weekKey(dates);
 
-  const conflict = bookings.some(b =>
+  const conflict = Object.values(bookings).some(b =>
     b.week === wk && b.day === modal.day &&
     startSlot < b.endSlot && endSlot > b.startSlot
   );
   if (conflict) { errEl.textContent = 'That time overlaps an existing booking.'; return; }
 
-  const colorIdx = nextId % COLORS.length;
-  bookings.push({ id: nextId++, week: wk, day: modal.day, startSlot, endSlot, title, organizer, color: colorIdx });
-  save();
+  const color = colorCounter++ % COLORS.length;
+  db.ref('bookings').push({ week: wk, day: modal.day, startSlot, endSlot, title, organizer: userName, color });
   modal = null;
-  render();
+  renderApp();
 }
 
 function deleteBooking(id) {
-  bookings = bookings.filter(b => b.id !== id);
-  save();
+  db.ref('bookings/' + id).remove();
   modal = null;
-  render();
+  renderApp();
 }
 
-function timeLabel(s, e) { return `${TIMES[s]} – ${TIMES[e]}`; }
+function saveName() {
+  const val = document.getElementById('name-input').value.trim();
+  if (!val) return;
+  userName = val;
+  localStorage.setItem('room208_name', val);
+  renderApp();
+}
 
-function render() {
+function changeName() {
+  userName = '';
+  localStorage.removeItem('room208_name');
+  renderApp();
+}
+
+// ── Screens ──────────────────────────────────────────────────────────────────
+
+function renderSetupScreen() {
+  document.getElementById('root').innerHTML = `
+  <div class="setup-screen">
+    <div class="setup-card">
+      <h2>Connect Firebase</h2>
+      <p>This app needs a free Firebase Realtime Database so everyone sees live bookings. Follow these steps — it takes about 5 minutes.</p>
+
+      <p class="setup-step"><strong>1.</strong> Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--green)">console.firebase.google.com</a> and create a new project (disable Analytics — not needed).</p>
+      <p class="setup-step" style="margin-top:8px"><strong>2.</strong> In the left sidebar go to <strong>Build → Realtime Database</strong> → Create database → choose any region → start in <strong>test mode</strong>.</p>
+      <p class="setup-step" style="margin-top:8px"><strong>3.</strong> Go to <strong>Project Settings</strong> (gear icon) → scroll to "Your apps" → click the web icon <strong>&lt;/&gt;</strong> → register the app → copy the <code style="display:inline;padding:1px 4px;font-size:12px">firebaseConfig</code> object.</p>
+      <p class="setup-step" style="margin-top:8px"><strong>4.</strong> Open <code style="display:inline;padding:1px 4px;font-size:12px">index.html</code> in a text editor, find the <code style="display:inline;padding:1px 4px;font-size:12px">FIREBASE_CONFIG</code> block near the top, and paste your values in.</p>
+      <p class="setup-step" style="margin-top:8px"><strong>5.</strong> Save and re-upload to GitHub Pages. Done!</p>
+    </div>
+  </div>`;
+}
+
+function renderNameScreen() {
+  document.getElementById('root').innerHTML = `
+  <div class="name-screen">
+    <div class="name-card">
+      <h2>Welcome to Room 208</h2>
+      <p>Enter your name so others can see who has booked the room. You'll only need to do this once.</p>
+      <input id="name-input" type="text" placeholder="Your name" maxlength="40"
+        onkeydown="if(event.key==='Enter')saveName()" autofocus />
+      <button onclick="saveName()">Continue</button>
+    </div>
+  </div>`;
+}
+
+function renderApp() {
+  if (!isConfigured()) { renderSetupScreen(); return; }
+  if (!userName) { renderNameScreen(); return; }
+
   const dates = getWeekDates(weekOffset);
   const wk = weekKey(dates);
   const months = [...new Set(dates.map(d => MONTHS[d.getMonth()]))];
   const year = dates[0].getFullYear();
   const weekLabel = `${months.join(' / ')} ${year}`;
+  const wkBookings = getWeekBookings(wk);
 
-  let h = `<div class="header">
+  let h = `<div class="container"><div class="header">
     <div class="room-badge">
       <div class="room-dot"></div>
-      <div>
-        <div class="room-name">Room 208</div>
-        <div class="room-cap">Capacity: 12 &middot; Projector &middot; Whiteboard</div>
-      </div>
+      <div class="room-name">Room 208</div>
     </div>
-    <div class="nav">
-      <button onclick="weekOffset--;render()">&#8592;</button>
-      <span class="week-label">${weekLabel}</span>
-      <button onclick="weekOffset++;render()">&#8594;</button>
+    <div class="header-right">
+      <span class="user-pill" onclick="changeName()" title="Click to change name">&#128100; ${userName}</span>
+      <div class="nav">
+        <button onclick="weekOffset--;renderApp()">&#8592;</button>
+        <span class="week-label">${weekLabel}</span>
+        <button onclick="weekOffset++;renderApp()">&#8594;</button>
+      </div>
     </div>
   </div>
   <div class="calendar">
-    <div class="cal-head">
-      <div class="cal-head-cell"></div>`;
+    <div class="cal-head"><div class="cal-head-cell"></div>`;
 
   dates.forEach((d, i) => {
     const tod = isToday(d) ? ' today' : '';
     h += `<div class="cal-head-cell${tod}"><span class="dn">${d.getDate()}</span>${DAYS[i]}</div>`;
   });
+
   h += `</div><div class="cal-body"><div class="time-col">`;
   TIMES.forEach(t => { h += `<div class="time-cell">${t}</div>`; });
   h += `</div>`;
@@ -312,28 +440,30 @@ function render() {
       const booked = isSlotBooked(wk, d, si);
       h += `<div class="slot${booked ? ' booked' : ''}" ${!booked ? `onclick="openNew(${d},${si})"` : ''}></div>`;
     });
-    getBookingsForWeekDay(wk, d).forEach(b => {
+    wkBookings.filter(b => b.day === d).forEach(b => {
       const c = COLORS[b.color % COLORS.length];
       const top = b.startSlot * 44;
       const height = (b.endSlot - b.startSlot) * 44 - 2;
-      h += `<div class="booking" style="top:${top}px;height:${height}px;background:${c.bg};border:1px solid ${c.border};color:${c.text}" onclick="openView(${b.id})">
+      h += `<div class="booking" style="top:${top}px;height:${height}px;background:${c.bg};border:1px solid ${c.border};color:${c.text}" onclick="openView('${b.id}')">
         <div class="booking-title">${b.title}</div>
         <div class="booking-time">${timeLabel(b.startSlot, b.endSlot)}</div>
       </div>`;
     });
     h += `</div>`;
   }
+
   h += `</div></div>
   <div class="legend"><div class="legend-dot"></div>Click any empty slot to book</div>`;
 
+  // ── Modals ──
   if (modal?.type === 'new') {
     const startOpts = TIMES.map((t, i) => `<option value="${i}" ${i === modal.startSlot ? 'selected' : ''}>${t}</option>`).join('');
     const endOpts = TIMES.map((t, i) => `<option value="${i}" ${i === modal.endSlot ? 'selected' : ''}>${t}</option>`).join('');
     h += `<div class="modal-bg" onclick="if(event.target===this)closeModal()">
       <div class="modal">
-        <h3>Book Boardroom A</h3>
+        <h3>Book Room 208</h3>
         <div class="field"><label>Meeting title</label><input id="m-title" type="text" placeholder="e.g. Team sync" autofocus /></div>
-        <div class="field"><label>Organizer</label><input id="m-org" type="text" placeholder="Your name" /></div>
+        <div class="field" style="font-size:13px;color:var(--text-secondary)">Booking as <strong style="color:var(--text)">${userName}</strong></div>
         <div class="two-col">
           <div class="field"><label>Start</label><select id="m-start">${startOpts}</select></div>
           <div class="field"><label>End</label><select id="m-end">${endOpts}</select></div>
@@ -346,19 +476,21 @@ function render() {
       </div>
     </div>`;
   } else if (modal?.type === 'view') {
-    const b = bookings.find(x => x.id === modal.id);
+    const b = bookings[modal.id];
     if (b) {
       const c = COLORS[b.color % COLORS.length];
+      const isOwn = b.organizer && b.organizer.toLowerCase() === userName.toLowerCase();
       h += `<div class="modal-bg" onclick="if(event.target===this)closeModal()">
         <div class="modal">
           <h3>${b.title}</h3>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;flex-wrap:wrap;">
+          ${isOwn ? '<div class="own-badge">Your booking</div>' : ''}
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
             <span style="background:${c.bg};color:${c.text};border:1px solid ${c.border};border-radius:4px;padding:3px 10px;font-size:12px;">${timeLabel(b.startSlot, b.endSlot)}</span>
             <span style="font-size:13px;color:var(--text-secondary);">${DAYS[b.day]}</span>
           </div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem;">Organizer: <span style="color:var(--text)">${b.organizer || '—'}</span></div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem;">Booked by: <span style="color:var(--text)">${b.organizer || '—'}</span></div>
           <div class="modal-actions">
-            <button class="btn-delete" onclick="deleteBooking(${b.id})">Cancel booking</button>
+            ${isOwn ? `<button class="btn-delete" onclick="deleteBooking('${modal.id}')">Cancel booking</button>` : ''}
             <button onclick="closeModal()">Close</button>
           </div>
         </div>
@@ -366,16 +498,25 @@ function render() {
     }
   }
 
-  document.getElementById('app').innerHTML = h;
+  h += `</div>`;
+  document.getElementById('root').innerHTML = h;
 }
 
+// ── Boot ──────────────────────────────────────────────────────────────────────
 window.openNew = openNew;
 window.openView = openView;
 window.closeModal = closeModal;
 window.confirmBooking = confirmBooking;
 window.deleteBooking = deleteBooking;
+window.saveName = saveName;
+window.changeName = changeName;
+window.renderApp = renderApp;
 
-render();
+if (isConfigured()) {
+  initFirebase();
+} else {
+  renderSetupScreen();
+}
 </script>
 </body>
 </html>
